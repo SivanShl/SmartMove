@@ -227,8 +227,8 @@
                                       IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=SkipUnusedObjectsConversion, Mode=TwoWay}"
                                       Margin="0,15,0,0" Background="Transparent" Focusable="False"/>
                             <CheckBox x:Name="OptimizeByComments" Grid.Row="14" Content="Optimize by comments" 
-                                      IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=OptimizeByCommentConversion, Mode=TwoWay}"
-                                      Margin="0,15,0,0" Background="Transparent" Focusable="False"/>
+                                      IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=OptimizeByCommentsConversion, Mode=TwoWay}"
+                                      Margin="0,15,0,0" Background="Transparent" Focusable="False" Checked="OptimizeByComments_Checked" Unchecked="OptimizeByComments_Checked"/>
                             <CheckBox x:Name="CreateServiceGroupsConf" Grid.Row="14" Content="Import service groups"
                                       IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=CreateServiceGroupsConfiguration, Mode=TwoWay}"
                                       Margin="0,15,0,0" Background="Transparent" Focusable="False" Visibility="Collapsed"/>

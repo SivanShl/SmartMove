@@ -13,6 +13,7 @@ using PanoramaPaloAltoMigration;
 using System.Text.RegularExpressions;
 using CommonUtils;
 using System.Threading;
+using CheckPointObjects;
 
 namespace SmartMove
 {
@@ -110,6 +111,7 @@ namespace SmartMove
         private bool _isInteractive = true;
 
         private bool _isCiscoSpreadAclRemarks = false;
+        private bool _isOptimizeByComments;
         #endregion
 
         public int DisplayHelp()
@@ -459,6 +461,23 @@ namespace SmartMove
                             this.isAnalyze = true;
                             break; 
                         }
+                    case "-obc":
+                    case "--optimize-by-comments": // adding flag to optimize by comments option
+                        {
+                            if (args[i] == args.Last())
+                            {
+                                _successCommands = false;
+                                Console.WriteLine("Value for option --optimize-by-comments is not specified! ", MessageTypes.Error);
+                            }
+                            else if (bool.TryParse(args[i + 1].ToLower(), out _isOptimizeByComments))
+                                break;
+                            else
+                            {
+                                _successCommands = false;
+                                Console.WriteLine("Value for option format is not corrected! Allow only 'true' or 'false' ", MessageTypes.Error);
+                            }
+                            break;
+                        }
                 }
             }
             return this;
@@ -533,10 +552,17 @@ namespace SmartMove
             switch (commandLine.Vendor)
             {
                 case "CiscoASA":
-                    CiscoParser.SpreadAclRemarks = _isCiscoSpreadAclRemarks;
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments;
+                    RuleBaseOptimizer.IsOptimizeByComments = _isOptimizeByComments;
+                    // verifying that the user or the default option won't reverse the flag to false if asking optimize by comments option
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments ? true : _isCiscoSpreadAclRemarks;
                     vendorParser = new CiscoParser();
                     break;
                 case "FirePower":
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments;
+                    RuleBaseOptimizer.IsOptimizeByComments = _isOptimizeByComments;
+                    // verifying that the user or the default option won't reverse the flag to false if asking optimize by comments option
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments ? true : _isCiscoSpreadAclRemarks;
                     vendorParser = new CiscoParser()
                     {
                         isUsingForFirePower = true
@@ -968,10 +994,15 @@ namespace SmartMove
             switch (commandLine.Vendor)
             {
                 case "CiscoASA":
-                    CiscoParser.SpreadAclRemarks = _isCiscoSpreadAclRemarks;
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments;
+                    RuleBaseOptimizer.IsOptimizeByComments = _isOptimizeByComments;
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments ? true : _isCiscoSpreadAclRemarks;
                     vendorParser = new CiscoParser();
                     break;
                 case "FirePower":
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments;
+                    RuleBaseOptimizer.IsOptimizeByComments = _isOptimizeByComments;
+                    CiscoParser.SpreadAclRemarks = _isOptimizeByComments ? true : _isCiscoSpreadAclRemarks;
                     vendorParser = new CiscoParser()
                     {
                         isUsingForFirePower = true

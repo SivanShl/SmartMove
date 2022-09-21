@@ -37,7 +37,9 @@ namespace CheckPointObjects
     /// </summary>
     public static class RuleBaseOptimizer
     {
-        public static CheckPoint_Layer Optimize(CheckPoint_Layer originalLayer, string newName, bool? isOptimizeByComments = false)
+
+        public static bool IsOptimizeByComments = false;
+        public static CheckPoint_Layer Optimize(CheckPoint_Layer originalLayer, string newName)
         {
             CheckPoint_Layer curLayer = originalLayer;
             CheckPoint_Layer newLayer;
@@ -48,7 +50,7 @@ namespace CheckPointObjects
 
                 foreach (CheckPoint_Rule rule in curLayer.Rules)
                 {
-                    AddRule(nextLayer, rule, isOptimizeByComments);
+                    AddRule(nextLayer, rule);
                 }
 
                 if (nextLayer.Rules.Count == curLayer.Rules.Count)
@@ -68,7 +70,7 @@ namespace CheckPointObjects
             return newLayer;
         }
     
-        private static void AddRule(CheckPoint_Layer layer, CheckPoint_Rule newRule, bool? isOptimizeByComments)
+        private static void AddRule(CheckPoint_Layer layer, CheckPoint_Rule newRule)
         {
             bool match = false;
 
@@ -77,7 +79,7 @@ namespace CheckPointObjects
             {
                 for (int i = pos; i < layer.Rules.Count(); i++)
                 {
-                    if (IsRuleSimilarToRule(layer.Rules[i], newRule, isOptimizeByComments))
+                    if (IsRuleSimilarToRule(layer.Rules[i], newRule))
                     {
                         layer.Rules[i] = MergeRules(layer.Rules[i], newRule);
                         match = true;
@@ -90,7 +92,7 @@ namespace CheckPointObjects
             {
                 CheckPoint_Rule rule = newRule.Clone();
                 rule.Layer = layer.Name;
-                // rule.Comments = "";
+                rule.Comments = IsOptimizeByComments ? rule.Comments : "";
                 rule.ConversionComments = newRule.ConversionComments;
                 layer.Rules.Add(rule);
             }
@@ -131,7 +133,7 @@ namespace CheckPointObjects
             mergedRule.Track = rule1.Track;
             mergedRule.SourceNegated = rule1.SourceNegated;
             mergedRule.DestinationNegated = rule1.DestinationNegated;
-            mergedRule.Comments = rule1.Comments;
+            mergedRule.Comments = IsOptimizeByComments ? rule1.Comments : ""; // adding or not adding comments by the user request
             mergedRule.ConversionComments = rule1.ConversionComments + " | " + rule2.ConversionComments;
             mergedRule.ConvertedCommandId = rule1.ConvertedCommandId;
             mergedRule.ConversionIncidentType = ConversionIncidentType.None;
@@ -179,9 +181,10 @@ namespace CheckPointObjects
             return (matchedRules == 0) ? -1 : (pos + 1);
         }
         
-        private static bool IsRuleSimilarToRule(CheckPoint_Rule rule1, CheckPoint_Rule rule2, bool? isOptimizeByComments)
+        private static bool IsRuleSimilarToRule(CheckPoint_Rule rule1, CheckPoint_Rule rule2)
         {
-            if (rule1.Comments != rule2.Comments || string.IsNullOrEmpty(rule1.Comments) && (bool)isOptimizeByComments)
+             // Optimizing by comments - checks if comments of the two rules are matched and not empty
+            if (IsOptimizeByComments && rule1.Comments != rule2.Comments || IsOptimizeByComments && string.IsNullOrEmpty(rule1.Comments))
             {
                 return false;
             }

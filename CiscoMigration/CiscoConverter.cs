@@ -49,8 +49,6 @@ namespace CiscoMigration
 
         public bool SkipUnusedObjects { get; set; } //check if Optimized configuration is requested
         
-        public bool? OptimizeByComments { get; set; } //check if Optimize by comment is requested
-        
         #endregion
 
         #region Helper Classes
@@ -5741,7 +5739,7 @@ namespace CiscoMigration
             {
                 string optimizedSubPolicyName = layer.Name + "_opt";
                 
-                CheckPoint_Layer optimizedLayer = RuleBaseOptimizer.Optimize(layer, optimizedSubPolicyName, OptimizeByComments);
+                CheckPoint_Layer optimizedLayer = RuleBaseOptimizer.Optimize(layer, optimizedSubPolicyName);
                 foreach (CheckPoint_Rule subSubRule in optimizedLayer.Rules)
                 {
                     if (subSubRule.SubPolicyName.Equals(GlobalRulesSubpolicyName))
