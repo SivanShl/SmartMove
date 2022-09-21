@@ -34,6 +34,8 @@ namespace CheckPointObjects
     ///       5.1. both the source and destination columns match
     ///       5.2. both the source and service columns match
     ///       5.3. both the destination and service columns match
+    /// for CiscoASA and FirePower vendors there is an option to optimize by comments -
+    /// two rules can be merged if they have the same comments and in addition they up to the above criteria.
     /// </summary>
     public static class RuleBaseOptimizer
     {
