@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ********************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -286,11 +287,11 @@ namespace CheckPointObjects
                     }
 
             }
-            else
+            else 
                 return commentToProcess.Trim();
             }
 
-            return commentBuilder == "Matched rule(s)" ? "" : commentBuilder;
+            return (commentBuilder == "Matched rule(s)" ? "" : commentBuilder).Substring(0,Math.Min(commentBuilder.Length, 250));
         }
     }
 }
